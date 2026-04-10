@@ -26,27 +26,58 @@ interface Service {
   tags: string[];
 }
 
+function parseCSVLine(line: string): string[] {
+  const values: string[] = [];
+  let current = '';
+  let insideQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    const nextChar = line[i + 1];
+
+    if (char === '"') {
+      if (insideQuotes && nextChar === '"') {
+        // Escaped quote ("" = literal ")
+        current += '"';
+        i++; // Skip next quote
+      } else {
+        // Toggle quote state
+        insideQuotes = !insideQuotes;
+      }
+    } else if (char === ',' && !insideQuotes) {
+      // End of field (only if not inside quotes)
+      values.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+
+  // Add last field
+  values.push(current.trim());
+
+  return values;
+}
+
 function parseCSV(csv: string): Record<string, string>[] {
   const lines = csv.trim().split('\n');
   if (lines.length < 2) return [];
 
   // Parse header
-  const headers = lines[0]
-    .split(',')
-    .map(h => h.trim().toLowerCase().replace(/"/g, ''));
+  const headers = parseCSVLine(lines[0])
+    .map(h => h.toLowerCase());
 
   // Parse rows
-  return lines.slice(1).map(line => {
-    const values = line
-      .split(',')
-      .map(v => v.trim().replace(/"/g, ''));
-
-    const row: Record<string, string> = {};
-    headers.forEach((header, idx) => {
-      row[header] = values[idx] || '';
+  return lines.slice(1)
+    .filter(line => line.trim())
+    .map(line => {
+      const values = parseCSVLine(line);
+      const row: Record<string, string> = {};
+      headers.forEach((header, idx) => {
+        row[header] = values[idx] || '';
+      });
+      return row;
     });
-    return row;
-  });
 }
 
 export async function fetchProjects(): Promise<Project[]> {
@@ -63,7 +94,7 @@ export async function fetchProjects(): Promise<Project[]> {
 
     const csv = await response.text();
     const rows = parseCSV(csv);
-    console.log('Fetched projects:', rows);
+    // console.log('Fetched projects:', rows);
 
     return rows
       .filter(row => row.title && row.title.trim())
