@@ -33,7 +33,7 @@ export default function ProcessSection() {
       <div className="section-tag">Notre méthode</div>
       <h2 className="section-title">Un projet web clair, de A à Z</h2>
       <p className="section-desc">
-        Nous avons structuré notre processus pour que vous sachiez toujours où en est votre projet et ce qu'il se passe ensuite.
+        Nous avons structuré notre processus pour que vous sachiez toujours où en est votre projet et ce qu’il se passe ensuite.
       </p>
 
       <div className="process-steps">
