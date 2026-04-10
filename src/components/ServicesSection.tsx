@@ -51,7 +51,7 @@ export default function ServicesSection() {
       <div className="section-tag">Nos expertises</div>
       <h2 className="section-title">Des solutions digitales complètes et sur-mesure</h2>
       <p className="section-desc">
-        De la stratégie à la mise en ligne, nous couvrons l'intégralité de votre projet web avec des technologies modernes et éprouvées.
+        De la stratégie à la mise en ligne, nous couvrons l&apos;intégralité de votre projet web avec des technologies modernes et éprouvées.
       </p>
 
       <div className="services-grid">
